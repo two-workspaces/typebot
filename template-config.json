@@ -1,0 +1,212 @@
+{
+  "services": {
+    "4e250c54-dc22-44c9-a997-a55788f7725f": {
+      "icon": "https://raw.githubusercontent.com/two-workspaces/typebot/main/icon.svg",
+      "name": "Typebot",
+      "build": {},
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": "/api/healthz",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "repo": "https://github.com/two-workspaces/typebot"
+      },
+      "networking": {
+        "serviceDomains": {
+          "<hasDomain>": {}
+        }
+      },
+      "volumeMounts": {},
+      "variables": {
+        "PORT": {
+          "defaultValue": "3000",
+          "description": "Port the builder listens on - leave as is",
+          "isOptional": false
+        },
+        "HOSTNAME": {
+          "defaultValue": "::",
+          "description": "Listen on IPv4 and IPv6 - leave as is",
+          "isOptional": false
+        },
+        "ADMIN_EMAIL": {
+          "defaultValue": "",
+          "description": "Your email - the account allowed to sign up, with the unlimited plan. Sign-in codes are printed to this service's deploy logs until you add SMTP",
+          "isOptional": false
+        },
+        "DISABLE_SIGNUP": {
+          "defaultValue": "true",
+          "description": "Only ADMIN_EMAIL and people you invite can create accounts; set to false to open sign-up",
+          "isOptional": false
+        },
+        "ENCRYPTION_SECRET": {
+          "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Encrypts stored credentials (API keys, OAuth tokens in blocks). Exactly 32 characters - BACK IT UP, changing it breaks saved credentials",
+          "isOptional": false
+        },
+        "DATABASE_URL": {
+          "defaultValue": "postgresql://${{Postgres.POSTGRES_USER}}:${{Postgres.POSTGRES_PASSWORD}}@${{Postgres.RAILWAY_PRIVATE_DOMAIN}}:5432/${{Postgres.POSTGRES_DB}}",
+          "description": "Postgres on the private network",
+          "isOptional": false
+        },
+        "NEXTAUTH_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Public URL of the builder - set it to your custom domain after adding one",
+          "isOptional": false
+        },
+        "NEXT_PUBLIC_VIEWER_URL": {
+          "defaultValue": "https://${{Viewer.RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Public URL where your bots are served (the Viewer service)",
+          "isOptional": false
+        },
+        "RAILWAY_HEALTHCHECK_TIMEOUT_SEC": {
+          "defaultValue": "600",
+          "description": "First boot runs the database migrations before the health check can pass",
+          "isOptional": false
+        },
+        "SMTP_HOST": {
+          "defaultValue": "",
+          "description": "SMTP server for sign-in codes, invitations and Send email blocks (Railway allows outbound SMTP on Pro only). Empty = codes go to the deploy logs",
+          "isOptional": true
+        },
+        "SMTP_PORT": {
+          "defaultValue": "587",
+          "description": "SMTP port",
+          "isOptional": true
+        },
+        "SMTP_SECURE": {
+          "defaultValue": "false",
+          "description": "true for implicit TLS (port 465), false for STARTTLS (587)",
+          "isOptional": true
+        },
+        "SMTP_USERNAME": {
+          "defaultValue": "",
+          "description": "SMTP username",
+          "isOptional": true
+        },
+        "SMTP_PASSWORD": {
+          "defaultValue": "",
+          "description": "SMTP password",
+          "isOptional": true
+        },
+        "NEXT_PUBLIC_SMTP_FROM": {
+          "defaultValue": "",
+          "description": "Sender, e.g. 'Typebot' <noreply@example.com>",
+          "isOptional": true
+        },
+        "GITHUB_CLIENT_ID": {
+          "defaultValue": "",
+          "description": "GitHub OAuth app client ID, to add Sign in with GitHub",
+          "isOptional": true
+        },
+        "GITHUB_CLIENT_SECRET": {
+          "defaultValue": "",
+          "description": "GitHub OAuth app client secret",
+          "isOptional": true
+        }
+      }
+    },
+    "d2454b62-23c1-49e2-a7b6-a5809af35bc4": {
+      "icon": "https://raw.githubusercontent.com/two-workspaces/typebot/main/icon.svg",
+      "name": "Viewer",
+      "build": {},
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": "/api/healthz",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "image": "baptistearno/typebot-viewer:3.19.1"
+      },
+      "networking": {
+        "serviceDomains": {
+          "<hasDomain>": {}
+        }
+      },
+      "volumeMounts": {},
+      "variables": {
+        "PORT": {
+          "defaultValue": "3000",
+          "description": "Port the viewer listens on - leave as is",
+          "isOptional": false
+        },
+        "HOSTNAME": {
+          "defaultValue": "::",
+          "description": "Listen on IPv4 and IPv6 - leave as is",
+          "isOptional": false
+        },
+        "ENCRYPTION_SECRET": {
+          "defaultValue": "${{Typebot.ENCRYPTION_SECRET}}",
+          "description": "Same key as the builder",
+          "isOptional": false
+        },
+        "DATABASE_URL": {
+          "defaultValue": "postgresql://${{Postgres.POSTGRES_USER}}:${{Postgres.POSTGRES_PASSWORD}}@${{Postgres.RAILWAY_PRIVATE_DOMAIN}}:5432/${{Postgres.POSTGRES_DB}}",
+          "description": "Postgres on the private network",
+          "isOptional": false
+        },
+        "NEXTAUTH_URL": {
+          "defaultValue": "https://${{Typebot.RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Public URL of the builder - update it with the builder's custom domain",
+          "isOptional": false
+        },
+        "NEXT_PUBLIC_VIEWER_URL": {
+          "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+          "description": "Public URL of this viewer - set it to your custom domain after adding one, here and on Typebot",
+          "isOptional": false
+        }
+      }
+    },
+    "9ac46fa6-1f52-4c7e-8cb9-31db5bd04fa9": {
+      "icon": "https://devicons.railway.app/i/postgresql.svg",
+      "name": "Postgres",
+      "build": {},
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": null,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": {
+        "image": "postgres:17.11-alpine"
+      },
+      "networking": {
+        "serviceDomains": {}
+      },
+      "volumeMounts": {
+        "5c6be739-81c2-4fa0-88cc-d9ce13a02b88": {
+          "mountPath": "/var/lib/postgresql/data"
+        }
+      },
+      "variables": {
+        "POSTGRES_DB": {
+          "defaultValue": "typebot",
+          "description": "Database name",
+          "isOptional": false
+        },
+        "POSTGRES_USER": {
+          "defaultValue": "typebot",
+          "description": "Database user",
+          "isOptional": false
+        },
+        "POSTGRES_PASSWORD": {
+          "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+          "description": "Auto-generated database password",
+          "isOptional": false
+        },
+        "PGDATA": {
+          "defaultValue": "/var/lib/postgresql/data/pgdata",
+          "description": "Data subdirectory - keeps Postgres happy on Railway volumes",
+          "isOptional": false
+        },
+        "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+          "defaultValue": "60",
+          "description": "Time for Postgres to shut down cleanly on redeploy",
+          "isOptional": false
+        }
+      }
+    }
+  }
+}
