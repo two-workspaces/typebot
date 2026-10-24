@@ -5,6 +5,6 @@
   "category": "Bots",
   "image": "https://raw.githubusercontent.com/two-workspaces/typebot/main/icon.svg",
   "card_desc": "Typebot: build chatbots visually and embed them in your site or WhatsApp. Builder, bot viewer and Postgres, with sign-in codes in the deploy logs so you can log in before setting up email.",
-  "published": false,
+  "published": true,
   "id": "1c1b713d-16dc-4d18-98b6-c6c1bc8aecfd"
 }
