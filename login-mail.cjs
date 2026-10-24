@@ -7,7 +7,8 @@ const net = require("node:net");
 const port = Number(process.env.LOGIN_MAIL_PORT || 2525);
 
 const decode = (raw) =>
-  raw
+  `\r\n${raw}`
+    .replace(/\r\n\.\./g, "\r\n.") // SMTP dot-stuffing
     .replace(/=\r?\n/g, "")
     .replace(/=([0-9A-F]{2})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
     .replace(/&amp;/g, "&");
