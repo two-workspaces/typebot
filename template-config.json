@@ -170,7 +170,7 @@
         "restartPolicyMaxRetries": 10
       },
       "source": {
-        "image": "postgres:17.11-alpine"
+        "image": "postgres:17.12-alpine"
       },
       "networking": {
         "serviceDomains": {}
